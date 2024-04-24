@@ -7,6 +7,5 @@ import "./components/particle-emitter";
 import "./components/reflection-probe";
 import "./components/simple-water";
 import "./components/uv-scroll";
-import "./components/video-texture-target";
 import "./components/waypoint";
 import "./inflators";
