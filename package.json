@@ -1,6 +1,6 @@
 {
   "name": "@c-frame/aframe-gltf-model-plus",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "description": "gltf-model-plus component to load glb file with hubs extensions.",
   "main": "dist/gltf-model-plus.min.js",
   "module": "index.js",
@@ -43,15 +43,16 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",
-    "networked-aframe": "^0.12.1",
+    "networked-aframe": "^0.14.0",
     "prettier": "3.2.5",
     "typescript": "^5.3.3",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.2"
+    "webpack-dev-server": "~5.0.4"
   },
   "dependencies": {
-    "three": "^0.162.0",
-    "lib-hubs": "github:Elettrotecnica/lib-hubs#elettrotecnica"
+    "@mozillareality/easing-functions": "^0.1.1",
+    "lib-hubs": "github:Elettrotecnica/lib-hubs#elettrotecnica",
+    "three": "^0.172.0"
   }
 }

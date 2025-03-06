@@ -60,7 +60,7 @@ AFRAME.registerSystem("waypoint", {
     if (this.pendingEmitWaypointsReady) return;
     this.pendingEmitWaypointsReady = true;
     console.log("[wp] schedule emitting waypoints-ready in a microtask");
-    queueMicrotask(() => {
+    setTimeout(() => {
       if (this.glbLoading > 0) {
         console.log(`[wp] ${this.glbLoading} glb still loading, cancel emitting waypoints-ready`);
         this.pendingEmitWaypointsReady = false;
@@ -68,7 +68,9 @@ AFRAME.registerSystem("waypoint", {
       }
 
       console.log("[wp] emit waypoints-ready");
-      this.el.emit("waypoints-ready");
+      setTimeout(() => {
+        this.el.emit("waypoints-ready");
+      });
       this.pendingEmitWaypointsReady = false;
     });
   },
@@ -91,9 +93,9 @@ AFRAME.registerSystem("waypoint", {
     if (withTransition && cursorTeleport) {
       cursorTeleport.teleportTo(position, quaternion);
     } else {
-      const navMeshConstraint = document.querySelector('[simple-navmesh-constraint]');
+      const navMeshConstraint = document.querySelector("[simple-navmesh-constraint]");
       if (navMeshConstraint) {
-        navMeshConstraint.setAttribute("simple-navmesh-constraint", {enabled: false});
+        navMeshConstraint.setAttribute("simple-navmesh-constraint", { enabled: false });
       }
       const camForRotation = camera.object3D;
       const destQuaternion = new THREE.Quaternion();
@@ -103,7 +105,7 @@ AFRAME.registerSystem("waypoint", {
       cameraRig.object3D.position.copy(position);
       cameraRig.object3D.quaternion.copy(destQuaternion);
       if (navMeshConstraint) {
-        navMeshConstraint.setAttribute("simple-navmesh-constraint", {enabled: true});
+        navMeshConstraint.setAttribute("simple-navmesh-constraint", { enabled: true });
       }
     }
 
@@ -181,7 +183,7 @@ AFRAME.registerComponent("waypoint", {
       // persistent entity disconnect. Every participant gains the ownership, so
       // there is a race condition to set isOccupied:false here.
       if (
-	WITH_NAF &&
+        WITH_NAF &&
         !this.el.sceneEl.is("naf:reconnecting") &&
         this.data.isOccupied &&
         NAF.connection.activeDataChannels[this.data.occupiedBy] === false
@@ -365,6 +367,7 @@ AFRAME.registerComponent("move-to-unoccupied-waypoint", {
     this.listenerWaypointsReady = this.listenerWaypointsReady.bind(this);
     this.waypointsReady = false;
     this.triggered = false;
+    this.moved = false;
   },
 
   play() {
@@ -386,6 +389,7 @@ AFRAME.registerComponent("move-to-unoccupied-waypoint", {
   },
 
   listenerTrigger() {
+    if (this.data.on === "connected" && this.moved) return;
     this.triggered = true;
     // If the component is used with the connected event and the url includes a hash to spawn on a specific waypoint, then don't move.
     if (this.data.on === "connected" && window.location.hash !== "") return;
@@ -395,6 +399,7 @@ AFRAME.registerComponent("move-to-unoccupied-waypoint", {
   },
 
   listenerWaypointsReady() {
+    if (this.data.on === "connected" && this.moved) return;
     this.waypointsReady = true;
     if (this.triggered && this.waypointsReady) {
       if (this.data.delay === 0) {
@@ -406,6 +411,7 @@ AFRAME.registerComponent("move-to-unoccupied-waypoint", {
   },
 
   move() {
+    this.moved = true;
     const waypointSystem = this.el.sceneEl.systems.waypoint;
     const filterRegExp = this.data.filterRegExp ? new RegExp(this.data.filterRegExp) : null;
     const waypoints = waypointSystem.registeredWaypoints.filter((waypoint) => {

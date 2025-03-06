@@ -94,7 +94,7 @@ class GLTFHubsComponentsExtension {
                 if (type === "texture" && !parser.json.textures[value.index].extensions?.MOZ_texture_rgbe) {
                   // For now assume all non HDR textures linked in hubs components are sRGB.
                   // We can allow this to be overriden later if needed
-                  loadedDep.encoding = THREE.sRGBEncoding;
+                  loadedDep.colorSpace = THREE.SRGBColorSpace;
                 }
 
                 props[propName] = loadedDep;
@@ -278,8 +278,10 @@ export const gltfModelPlus = {
               node.reflectionProbeMode = "static";
             }
 
-            if (node.userData.gltfExtensions && node.userData.gltfExtensions.MOZ_hubs_components) {
-              const hubsComponents = node.userData.gltfExtensions.MOZ_hubs_components;
+            // In objects.gltf, it's HUBS_components
+            const hubsComponents =
+              node.userData.gltfExtensions?.MOZ_hubs_components ?? node.userData.gltfExtensions?.HUBS_components;
+            if (hubsComponents) {
               const srcForLogging = src.startsWith("data:") ? "data:application/octet-stream;base64,..." : src;
               console.log(srcForLogging, hubsComponents, node.name);
               Object.entries(hubsComponents).forEach(([componentName, componentProps]) => {
@@ -352,7 +354,9 @@ export const gltfModelPlus = {
                       }
                     });
                   } else {
-                    console.warn(`Unknown Hubs component '${componentName}'`);
+                    if (componentName !== "pinnable") {
+                      console.warn(`Unknown Hubs component '${componentName}'`);
+                    }
                   }
                 }
               });
