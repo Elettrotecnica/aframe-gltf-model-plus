@@ -1,6 +1,6 @@
 {
   "name": "@c-frame/aframe-gltf-model-plus",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "gltf-model-plus component to load glb file with hubs extensions.",
   "main": "dist/gltf-model-plus.min.js",
   "module": "index.js",
@@ -48,7 +48,7 @@
     "typescript": "^5.3.3",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "~5.0.4"
+    "webpack-dev-server": "^5.2.0"
   },
   "dependencies": {
     "@mozillareality/easing-functions": "^0.1.1",
